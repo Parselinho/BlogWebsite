@@ -1,11 +1,11 @@
 import redirectTo from "../app";
+import backendUrl from "../utils/url";
 
-class MyInfoClass {
+class GetSingleUser {
   constructor(parent, user) {
     this.parent = parent;
     this.username = user.username;
     this.role = user.role;
-    this.email = user.email;
     this.id = user._id;
     this.comments = user.comments;
     this.posts = user.posts;
@@ -25,7 +25,7 @@ class MyInfoClass {
   getComments() {
     if (this.comments && this.comments.length > 0) {
       const commentsList = this.comments.map((item) => {
-        return `<li><span>${item.title}</span><span>${item.createdAt}</span></li>`; // maybe add button
+        return `<li><span>${item.title}</span><span>${item.post}</span></li>`; // maybe add button
       });
       return `<ol>${commentsList.join("")}</ol>`;
     } else {
@@ -35,20 +35,20 @@ class MyInfoClass {
 
   render() {
     const div = document.createElement("div");
+    const divError = document.createElement("div");
+    divError.className = "errorMessage";
     div.className = "infoDiv";
     const myPosts = this.getPosts();
     const myComments = this.getComments();
-    document.querySelector(this.parent).append(div);
+    document.querySelector(this.parent).append(divError, div);
     div.insertAdjacentHTML(
       "beforeend",
       `
     <h2 class="h2info">${this.username} Info</h2>
-    <p>My Role: ${this.role}</p>
-    <p>My Email: ${this.email}</p>
-    <p>My Id: ${this.id}</p>
-    <p>my posts:</p>
+    <p>${this.username} Role: ${this.role}</p>
+    <p>${this.username} posts:</p>
       ${myPosts}
-    <p>my comments:</p>
+    <p>${this.username} comments:</p>
       ${myComments}
     <div class="centerBtn">
       <button type="button" class="edit-profile-btn">Edit My Profile</button>
@@ -59,11 +59,34 @@ class MyInfoClass {
     const editBtn = div.querySelector(".edit-profile-btn");
     const deleteBtn = div.querySelector(".delete-profile-btn");
 
-    editBtn.addEventListener("click", async (e) => {
+    editBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      // redirectTo("/home");
+      redirectTo(`/users/${this.id}/update`);
+    });
+
+    deleteBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      divError.textContent = "";
+      let alertW = window.confirm(`You Sure You Want to delete your user?`);
+      if (alertW) {
+        try {
+          await axios.delete(backendUrl("users", `/${this.id}`), {
+            withCredentials: true,
+          });
+          document.cookie =
+            "authToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
+          sessionStorage.removeItem("user");
+          redirectTo("/home");
+        } catch (error) {
+          div.textContent = "";
+          divError.insertAdjacentHTML(
+            "beforeend",
+            `<h2>${error.response.data.msg}</h2><a href='#/home'>Back Home Page</a>`
+          );
+        }
+      }
     });
   }
 }
 
-export default MyInfoClass;
+export default GetSingleUser;

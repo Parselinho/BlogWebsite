@@ -7,13 +7,18 @@ import Register from "./components/Register.js";
 import NotFound from "./components/NotFound.js";
 import Login from "./components/Login.js";
 import MyInfo from "./components/MyInfo.js";
+import Users from "./components/Users.js";
+import singleUser from "./components/SignleUser.js";
+import UpdateUser from "./components/UpdateUser.js";
 
 const routes = {
-  "/": Home,
   "/home": Home,
   "/register": Register,
   "/login": Login,
   "/my-info": MyInfo,
+  "/users": Users,
+  "/users/:id": singleUser,
+  "/users/:id/update": UpdateUser,
 };
 
 const isUserExist = JSON.parse(sessionStorage.getItem("user"));
@@ -30,18 +35,54 @@ const createNav = () => {
 };
 
 const router = async () => {
-  // document.querySelector(".gridMain").innerHTML = "";
-  // document.querySelector(".gridMain").className = "gridMain";
+  document.querySelector(".gridMain").innerHTML = "";
+  document.querySelector(".gridMain").className = "gridMain";
   createNav();
-  const request = parseRequestUrl();
-  const parseUrl =
-    `/${request.resource || ""}` +
-    `${request.id ? "/:id" : ""}` +
-    `${request.action ? `/${request.action}` : ""}`;
 
-  const page = routes[parseUrl] || NotFound;
-  await page();
+  const request = parseRequestUrl();
+  let path = `/${request.resource}`;
+  if (request.id) {
+    path += `/:id`;
+    if (request.action) {
+      path += `/${request.action}`;
+    }
+  }
+
+  const loggedIn = isUserExist;
+  const tryingToAccesAuthPage = path === "/login" || path === "/register";
+
+  if (loggedIn && tryingToAccesAuthPage) {
+    redirectTo("/home");
+    return;
+  }
+
+  const page = routes[path] || NotFound;
+
+  if (request.resource === "users" && request.id) {
+    if (request.action === "update") {
+      if (
+        (isUserExist && isUserExist.role === "admin") ||
+        isUserExist.userId === request.id
+      ) {
+        await UpdateUser(request.id);
+      } else {
+        document.querySelector(
+          ".gridMain"
+        ).innerHTML = `<p>You Are Not Allowed!</p><a href='#/home'>Back Home Page</a>`;
+      }
+    } else {
+      await singleUser(request.id);
+    }
+  } else {
+    await page();
+  }
 };
+
+function redirectTo(path) {
+  window.location.hash = path;
+}
 
 window.addEventListener("hashchange", router);
 window.addEventListener("load", router);
+
+export default redirectTo;

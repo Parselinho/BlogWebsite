@@ -1,3 +1,4 @@
+import MyInfoClass from "../classes/MyInfoClass";
 import backendUrl from "../utils/url";
 
 const MyInfo = async () => {
@@ -6,19 +7,8 @@ const MyInfo = async () => {
       withCredentials: true,
     });
     const { user } = data;
-    if (user.comments.length <= 0) {
-      console.log("good");
-    }
-    if (!user.comments) {
-      console.log("good two");
-    }
-    if (user.posts.length > 0) {
-      console.log("good three");
-    }
-    if (!user.posts) {
-      console.log("good Four");
-    }
-    console.log(data);
+    const myInforender = new MyInfoClass(".gridMain", user);
+    myInforender.render();
   } catch (error) {
     console.log(error.response.data.msg);
   }

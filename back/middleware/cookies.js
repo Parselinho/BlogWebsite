@@ -23,10 +23,10 @@ const generateTokenAndSetCookie = async (req, res, next) => {
   }
   const token = req.user.createToken();
   res.cookie("authToken", token, cookiesOption);
-  const { _id: userId, username } = req.user;
+  const { _id: userId, username, role } = req.user;
   req.userData = { userId, username, token };
   const statusCode = req.statusCode || 200;
-  return res.status(statusCode).json({ userId, username, token });
+  return res.status(statusCode).json({ userId, username, token, role });
 };
 
 module.exports = { generateTokenAndSetCookie };

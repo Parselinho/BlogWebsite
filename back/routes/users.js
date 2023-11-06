@@ -22,7 +22,7 @@ router.route("/myinfo").get(auth, getMyInfo);
 router
   .route("/:id")
   .get(auth, getUser)
-  .patch(auth, updateUser)
+  .patch(auth, updateUser, generateTokenAndSetCookie)
   .delete(auth, deleteUser);
 // .patch().delete()
 router.route("/login").post(login, generateTokenAndSetCookie);

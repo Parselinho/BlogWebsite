@@ -38,7 +38,14 @@ class LoginClass {
             withCredentials: true,
           }
         );
-        sessionStorage.setItem("user", JSON.stringify(data.username));
+        sessionStorage.setItem(
+          "user",
+          JSON.stringify({
+            userId: data.userId,
+            username: data.username,
+            role: data.role,
+          })
+        );
       } catch (error) {
         divError.innerHTML = `${error.response.data.msg}`;
       }

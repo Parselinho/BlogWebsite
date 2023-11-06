@@ -11,12 +11,11 @@ const debug = require("debug")("app:controllerUser");
 const getUser = async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id)
-    .select("-password")
+    .select("-password -__v")
     .populate([
-      { path: "posts", select: "title createdAt -_id" },
-      { path: "comments", select: "title post -_id" },
-    ])
-    .exec();
+      { path: "posts", select: "title createdAt" },
+      { path: "comments", select: "title post" },
+    ]);
   if (!user) {
     throw new NotFound(`user not found`);
   }
@@ -29,8 +28,7 @@ const getMyInfo = async (req, res) => {
     .populate([
       { path: "posts", select: "title createdAt -_id" },
       { path: "comments", select: "title post -_id" },
-    ])
-    .exec();
+    ]);
   if (!user) {
     throw new NotFound(`Not Found`);
   }
@@ -38,7 +36,12 @@ const getMyInfo = async (req, res) => {
 };
 
 const getAllUsers = async (req, res) => {
-  const users = await User.find({}).select("-pasword").exec();
+  const users = await User.find({})
+    .select("-password")
+    .populate([
+      { path: "posts", select: "title createdAt -_id" },
+      { path: "comments", select: "title post -_id" },
+    ]);
   res.json({ users });
 };
 
@@ -47,7 +50,7 @@ const login = async (req, res, next) => {
   if (error) throw new BadRequest(error.details[0].message);
 
   const { email, password } = req.body;
-  const user = await User.findOne({ email }).exec();
+  const user = await User.findOne({ email });
   if (!user) {
     throw new Unauthorized(`Invalid Credentials!`);
   }
@@ -90,18 +93,16 @@ const updateUser = async (req, res) => {
 
   await User.findByIdAndUpdate(id, req.body, {
     new: true,
-  })
-    .select("-password -posts -role -comments -__v -_id")
-    .exec();
+  }).select("-password -posts -role -comments -__v -_id");
 
-  const updatedUser = await User.findById(id)
-    .select("-password -posts -role -comments -__v -_id")
-    .exec();
+  const updatedUser = await User.findById(id).select(
+    "-password -posts -role -comments -__v -_id"
+  );
   const { username, email } = updatedUser;
 
   req.user.username = username;
   req.user.email = email;
-  res.status(200).json({ msg: req.body });
+  res.status(200).json({ user: updatedUser });
 };
 
 const deleteUser = async (req, res) => {

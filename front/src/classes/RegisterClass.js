@@ -41,7 +41,14 @@ class RegisterClass {
         const { data } = await axios.post(backendUrl("users"), userObj, {
           withCredentials: true,
         });
-        sessionStorage.setItem("user", JSON.stringify(data.username));
+        sessionStorage.setItem(
+          "user",
+          JSON.stringify({
+            userId: data.userId,
+            username: data.username,
+            role: data.role,
+          })
+        );
       } catch (error) {
         errorDiv.innerHTML = `${error.response.data.msg}`;
       }
