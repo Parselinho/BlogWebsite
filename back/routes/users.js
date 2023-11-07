@@ -6,6 +6,7 @@ const {
   getUser,
   createUser,
   login,
+  logout,
   getAllUsers,
   getMyInfo,
   updateUser,
@@ -18,13 +19,12 @@ router
   .get(auth, getAllUsers)
   .post(createUser, generateTokenAndSetCookie);
 router.route("/myinfo").get(auth, getMyInfo);
-// router.route("/myinfo/updatepassword").patch(auth, updateUserPassword);
+router.route("/login").post(login, generateTokenAndSetCookie);
+router.route("/logout").get(auth, logout);
 router
   .route("/:id")
   .get(auth, getUser)
   .patch(auth, updateUser, generateTokenAndSetCookie)
   .delete(auth, deleteUser);
-// .patch().delete()
-router.route("/login").post(login, generateTokenAndSetCookie);
 
 module.exports = router;

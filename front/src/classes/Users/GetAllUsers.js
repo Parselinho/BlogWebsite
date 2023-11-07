@@ -1,4 +1,4 @@
-import redirectTo from "../app";
+import redirectTo from "../../app";
 
 class GetAllUsers {
   constructor(parent, user) {
@@ -35,7 +35,6 @@ class GetAllUsers {
   render() {
     const div = document.createElement("div");
     div.className = "user-list-container";
-    // div.setAttribute("href", redirectTo(`users/${this.id}`));
     document.querySelector(this.parent).append(div);
     const posts = this.getPosts();
     const comments = this.getComments();

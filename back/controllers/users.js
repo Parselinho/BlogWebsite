@@ -1,5 +1,6 @@
 const { BadRequest, Unauthorized, NotFound, Forbidden } = require("../errors");
 const { Post } = require("../models/Post");
+const { Comment } = require("../models/Comment");
 const {
   User,
   validateUser,
@@ -62,6 +63,11 @@ const login = async (req, res, next) => {
   next();
 };
 
+const logout = async (req, res, next) => {
+  res.cookie("authToken", "", { expires: new Date(0), path: "/" });
+  res.status(200).json({ msg: `Logged Out Successfully` });
+};
+
 const createUser = async (req, res, next) => {
   const { error } = validateUser(req.body);
   if (error) throw new BadRequest(error.details[0].message);
@@ -117,9 +123,12 @@ const deleteUser = async (req, res) => {
   ) {
     throw new Forbidden(`Not Allowed!`);
   }
+  if (findUser._id.toString() === req.user.userId) {
+    res.cookie("authToken", "", { expires: new Date(0), path: "/" });
+  }
 
   await Post.deleteMany({ author: id });
-  // add deleteMany comments here
+  await Comment.deleteMany({ author: id });
   await User.findByIdAndDelete(id);
 
   res.status(200).json({ msg: "user deleted successfully" });
@@ -129,6 +138,7 @@ module.exports = {
   getUser,
   createUser,
   login,
+  logout,
   getAllUsers,
   getMyInfo,
   updateUser,

@@ -1,4 +1,4 @@
-import backendUrl from "../utils/url.js";
+import backendUrl from "../../utils/url.js";
 
 class LoginClass {
   constructor(parent) {
@@ -46,6 +46,7 @@ class LoginClass {
             role: data.role,
           })
         );
+        location.reload();
       } catch (error) {
         divError.innerHTML = `${error.response.data.msg}`;
       }

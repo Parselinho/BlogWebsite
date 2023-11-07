@@ -1,4 +1,4 @@
-import backendUrl from "../utils/url.js";
+import backendUrl from "../../utils/url.js";
 
 class RegisterClass {
   constructor(parent) {
@@ -49,6 +49,7 @@ class RegisterClass {
             role: data.role,
           })
         );
+        location.reload();
       } catch (error) {
         errorDiv.innerHTML = `${error.response.data.msg}`;
       }

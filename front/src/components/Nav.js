@@ -10,6 +10,9 @@ class NavClass {
       const a = document.createElement("a");
       a.setAttribute("href", `#/${item.toLowerCase()}`);
       a.textContent = item;
+      if (item === "Logout") {
+        a.id = "logoutBtn";
+      }
       nav.append(a);
     });
   }

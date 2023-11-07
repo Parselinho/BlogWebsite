@@ -16,7 +16,7 @@ const {
 } = require("../controllers/comments");
 
 router.route("/").get(getAllPosts).post(createPost);
-router.route("/users/:id").get(getAllPostsByUserId);
+router.route("/users/:id").get(getAllPostsByUserId); // didnt do frontEnd
 router
   .route("/:id")
   .get(getSinglePost)

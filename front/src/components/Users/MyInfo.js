@@ -1,5 +1,5 @@
-import MyInfoClass from "../classes/MyInfoClass";
-import backendUrl from "../utils/url";
+import MyInfoClass from "../../classes/Users/MyInfoClass";
+import backendUrl from "../../utils/url";
 
 const MyInfo = async () => {
   try {

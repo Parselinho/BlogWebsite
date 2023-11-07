@@ -1,5 +1,5 @@
-import redirectTo from "../app";
-import backendUrl from "../utils/url";
+import redirectTo from "../../app";
+import backendUrl from "../../utils/url";
 
 class GetSingleUser {
   constructor(parent, user) {
@@ -67,16 +67,18 @@ class GetSingleUser {
     deleteBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       divError.textContent = "";
+      const sessionUser = JSON.parse(sessionStorage.getItem("user"));
       let alertW = window.confirm(`You Sure You Want to delete your user?`);
       if (alertW) {
         try {
           await axios.delete(backendUrl("users", `/${this.id}`), {
             withCredentials: true,
           });
-          document.cookie =
-            "authToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
-          sessionStorage.removeItem("user");
+          if (sessionUser.userId === this.id) {
+            sessionStorage.removeItem("user");
+          }
           redirectTo("/home");
+          location.reload();
         } catch (error) {
           div.textContent = "";
           divError.insertAdjacentHTML(

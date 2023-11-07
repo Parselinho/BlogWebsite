@@ -1,4 +1,5 @@
-import backendUrl from "../utils/url";
+import backendUrl from "../../utils/url";
+import redirectTo from "../../app";
 
 class UserUpdate {
   constructor(parent, user) {
@@ -39,10 +40,10 @@ class UserUpdate {
           updatedUser,
           { withCredentials: true }
         );
-        console.log(data);
         const existUserData = JSON.parse(sessionStorage.getItem("user"));
         existUserData.username = data.user.username;
         sessionStorage.setItem("user", JSON.stringify(existUserData));
+        redirectTo(`/users/${this.id}`);
       } catch (error) {
         divError.textContent = `${error.response.data.msg}`;
       }

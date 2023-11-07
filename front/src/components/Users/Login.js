@@ -1,4 +1,4 @@
-import LoginClass from "../classes/LoginClass.js";
+import LoginClass from "../../classes/Users/LoginClass.js";
 
 const Login = () => {
   const newLogin = new LoginClass(".gridMain");

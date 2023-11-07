@@ -1,6 +1,6 @@
-import GetAllUsers from "../classes/GetAllUsers";
+import GetAllUsers from "../../classes/Users/GetAllUsers";
 
-const { default: backendUrl } = require("../utils/url");
+const { default: backendUrl } = require("../../utils/url");
 
 const Users = async () => {
   try {

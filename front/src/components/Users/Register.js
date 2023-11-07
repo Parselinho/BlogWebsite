@@ -1,4 +1,4 @@
-import RegisterClass from "../classes/RegisterClass.js";
+import RegisterClass from "../../classes/Users/RegisterClass.js";
 
 const Register = () => {
   const RegisterForm = new RegisterClass(".gridMain");

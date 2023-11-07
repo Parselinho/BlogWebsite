@@ -1,6 +1,6 @@
-import GetSingleUser from "../classes/GetSignleUser";
-import backendUrl from "../utils/url";
-import parseRequestUrl from "../utils/utils";
+import GetSingleUser from "../../classes/Users/GetSignleUser";
+import backendUrl from "../../utils/url";
+import parseRequestUrl from "../../utils/utils";
 
 const singleUser = async () => {
   const request = parseRequestUrl();

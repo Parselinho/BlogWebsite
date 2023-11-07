@@ -1,4 +1,4 @@
-import redirectTo from "../app";
+import redirectTo from "../../app";
 
 class MyInfoClass {
   constructor(parent, user) {
@@ -14,7 +14,7 @@ class MyInfoClass {
   getPosts() {
     if (this.posts && this.posts.length > 0) {
       const postsList = this.posts.map((item) => {
-        return `<li><span>${item.title}</span><span>${item.createdAt}</span></li>`; // maybe add button
+        return `<li><span>${item.title}</span><span>${item.createdAt}</span></li>`;
       });
       return `<ol>${postsList.join("")}</ol>`;
     } else {
@@ -25,7 +25,7 @@ class MyInfoClass {
   getComments() {
     if (this.comments && this.comments.length > 0) {
       const commentsList = this.comments.map((item) => {
-        return `<li><span>${item.title}</span><span>${item.createdAt}</span></li>`; // maybe add button
+        return `<li><span>${item.title}</span><span>${item.createdAt}</span></li>`;
       });
       return `<ol>${commentsList.join("")}</ol>`;
     } else {
@@ -59,9 +59,30 @@ class MyInfoClass {
     const editBtn = div.querySelector(".edit-profile-btn");
     const deleteBtn = div.querySelector(".delete-profile-btn");
 
-    editBtn.addEventListener("click", async (e) => {
+    editBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      // redirectTo("/home");
+      redirectTo(`/users/${this.id}/update`);
+    });
+    deleteBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      divError.textContent = "";
+      let alertW = window.confirm(`You Sure You Want to delete your user?`);
+      if (alertW) {
+        try {
+          await axios.delete(backendUrl("users", `/${this.id}`), {
+            withCredentials: true,
+          });
+          sessionStorage.removeItem("user");
+          redirectTo("/register");
+          location.reload();
+        } catch (error) {
+          div.textContent = "";
+          divError.insertAdjacentHTML(
+            "beforeend",
+            `<h2>${error.response.data.msg}</h2><a href='#/home'>Back Home Page</a>`
+          );
+        }
+      }
     });
   }
 }

@@ -1,6 +1,6 @@
-import UserUpdate from "../classes/UserUpdate";
-import backendUrl from "../utils/url";
-import parseRequestUrl from "../utils/utils";
+import UserUpdate from "../../classes/Users/UserUpdate";
+import backendUrl from "../../utils/url";
+import parseRequestUrl from "../../utils/utils";
 
 const UpdateUser = async () => {
   const request = parseRequestUrl();

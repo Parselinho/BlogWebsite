@@ -1,15 +1,18 @@
 // app.js
 import parseRequestUrl from "./utils/utils.js";
+import backendUrl from "./utils/url.js";
 
 import Home from "./components/Home.js";
 import NavClass from "./components/Nav.js";
-import Register from "./components/Register.js";
+import Register from "./components/Users/Register.js";
 import NotFound from "./components/NotFound.js";
-import Login from "./components/Login.js";
-import MyInfo from "./components/MyInfo.js";
-import Users from "./components/Users.js";
-import singleUser from "./components/SignleUser.js";
-import UpdateUser from "./components/UpdateUser.js";
+import Login from "./components/Users/Login.js";
+import MyInfo from "./components/Users/MyInfo.js";
+import Users from "./components/Users/Users.js";
+import singleUser from "./components/Users/SignleUser.js";
+import UpdateUser from "./components/Users/UpdateUser.js";
+import Posts from "./components/Posts/Posts.js";
+import SinglePost from "./components/Posts/SinglePost.js";
 
 const routes = {
   "/home": Home,
@@ -19,6 +22,9 @@ const routes = {
   "/users": Users,
   "/users/:id": singleUser,
   "/users/:id/update": UpdateUser,
+  "/posts": Posts,
+  "/posts/:id": SinglePost,
+  "/posts/:id/update": SinglePost,
 };
 
 const isUserExist = JSON.parse(sessionStorage.getItem("user"));
@@ -28,10 +34,32 @@ const createNav = () => {
   if (!isUserExist) {
     navItems = ["Home", "Register", "Login"];
   } else {
-    navItems = ["Home", "My-Info", "Posts", "Users", "Log-Out"];
+    navItems = [
+      "Home",
+      /* Try to do User group with drop-down menu*/ "My-Info",
+      "Users",
+      "Logout",
+      /* Posts group with drop-down menu*/ "Posts",
+    ];
   }
   const nav = new NavClass(navItems);
   nav.render();
+
+  const logoutBtn = document.querySelector("#logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async (e) => {
+      try {
+        await axios.get(backendUrl("users", "/logout"), {
+          withCredentials: true,
+        });
+        sessionStorage.removeItem("user");
+        redirectTo("/login");
+        location.reload();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  }
 };
 
 const router = async () => {
@@ -49,15 +77,16 @@ const router = async () => {
   }
 
   const loggedIn = isUserExist;
-  const tryingToAccesAuthPage = path === "/login" || path === "/register";
+  const tryingToAccessAuthPage = path === "/login" || path === "/register";
 
-  if (loggedIn && tryingToAccesAuthPage) {
+  if (loggedIn && tryingToAccessAuthPage) {
     redirectTo("/home");
     return;
   }
 
   const page = routes[path] || NotFound;
 
+  // Route handling for users
   if (request.resource === "users" && request.id) {
     if (request.action === "update") {
       if (
@@ -73,7 +102,28 @@ const router = async () => {
     } else {
       await singleUser(request.id);
     }
-  } else {
+  }
+  // Route handling for posts
+  else if (request.resource === "posts" && request.id) {
+    const isUpdateAction = request.action === "update";
+    // If it's an update action, check if the user has the right permission
+    if (
+      isUpdateAction &&
+      !(
+        isUserExist &&
+        (isUserExist.role === "admin" || isUserExist.userId === request.id)
+      )
+    ) {
+      document.querySelector(
+        ".gridMain"
+      ).innerHTML = `<p>You Are Not Allowed!</p><a href='#/home'>Back Home Page</a>`;
+    } else {
+      // Render the SinglePost or UpdatePost based on the action
+      await SinglePost(request.id, isUpdateAction);
+    }
+  }
+  // Route handling for all other pages
+  else {
     await page();
   }
 };
