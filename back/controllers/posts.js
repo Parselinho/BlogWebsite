@@ -25,7 +25,7 @@ const getSinglePost = async (req, res) => {
     { path: "author", select: "username -_id" },
     {
       path: "comments",
-      select: "title body createdAt -_id",
+      select: "title body createdAt _id",
       populate: { path: "author", select: "username -_id" },
     },
   ]);
@@ -87,7 +87,7 @@ const deleteSinglePostbById = async (req, res) => {
 
   const posts = await Post.find({}).populate("author", "username -_id").exec();
 
-  res.status(200).json({ posts });
+  res.status(200).json({ msg: `Post Deleted` });
 };
 
 // see all post by user
@@ -108,7 +108,7 @@ const getAllPosts = async (req, res) => {
     { path: "author", select: "username -_id" },
     {
       path: "comments",
-      select: "title body createdAt -_id",
+      select: "title body createdAt _id",
       populate: { path: "author", select: "username -_id" },
     },
   ]);

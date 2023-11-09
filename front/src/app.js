@@ -13,6 +13,7 @@ import singleUser from "./components/Users/SignleUser.js";
 import UpdateUser from "./components/Users/UpdateUser.js";
 import Posts from "./components/Posts/Posts.js";
 import SinglePost from "./components/Posts/SinglePost.js";
+import createPost from "./components/Posts/CreatePost.js";
 
 const routes = {
   "/home": Home,
@@ -22,6 +23,8 @@ const routes = {
   "/users": Users,
   "/users/:id": singleUser,
   "/users/:id/update": UpdateUser,
+
+  "/createpost": createPost,
   "/posts": Posts,
   "/posts/:id": SinglePost,
   "/posts/:id/update": SinglePost,
@@ -39,7 +42,9 @@ const createNav = () => {
       /* Try to do User group with drop-down menu*/ "My-Info",
       "Users",
       "Logout",
-      /* Posts group with drop-down menu*/ "Posts",
+      /* Posts group with drop-down menu*/
+      "CreatePost",
+      "Posts",
     ];
   }
   const nav = new NavClass(navItems);

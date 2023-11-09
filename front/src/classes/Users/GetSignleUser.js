@@ -14,7 +14,7 @@ class GetSingleUser {
   getPosts() {
     if (this.posts && this.posts.length > 0) {
       const postsList = this.posts.map((item) => {
-        return `<li><span>${item.title}</span><span>${item.createdAt}</span></li>`; // maybe add button
+        return `<li><span>${item.title}</span><span>${item.createdAt}</span><button class="info-btn">More Info About Post</button></li>`; // maybe add button
       });
       return `<ol>${postsList.join("")}</ol>`;
     } else {
@@ -25,7 +25,7 @@ class GetSingleUser {
   getComments() {
     if (this.comments && this.comments.length > 0) {
       const commentsList = this.comments.map((item) => {
-        return `<li><span>${item.title}</span><span>${item.post}</span></li>`; // maybe add button
+        return `<li><span>${item.title}</span><span>${item.post}</span><button class="info-btn">More Info About Comment</button></li>`; // maybe add button
       });
       return `<ol>${commentsList.join("")}</ol>`;
     } else {

@@ -16,7 +16,7 @@ const {
 } = require("../controllers/comments");
 
 router.route("/").get(getAllPosts).post(createPost);
-router.route("/users/:id").get(getAllPostsByUserId); // didnt do frontEnd
+router.route("/users/:id").get(getAllPostsByUserId); // didnt do FrontEnd
 router
   .route("/:id")
   .get(getSinglePost)
@@ -27,4 +27,5 @@ router
   .route("/:id/comments/:commentId")
   .patch(updateComment)
   .delete(deleteComment);
+
 module.exports = router;

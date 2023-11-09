@@ -19,7 +19,7 @@ class LoginClass {
         <label for="emailLogin">Email:</label>
         <input type="text" id="emailLogin" name="email" />
         <label for="passwordLogin">Password:</label>
-        <input type="text" id="passwordLogin" name="password" />
+        <input type="password" id="passwordLogin" name="password" />
         <button type="submit">Submit</button>
     `
     );
