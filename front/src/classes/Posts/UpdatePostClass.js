@@ -27,15 +27,15 @@ class UpdatePostClass {
       "&quot;"
     )}" />
     <label for="bodyUpdate">Edit Body:</label>
-    <input type="text" id="bodyUpdate" name="body" value="${this.body.replace(
+    <textarea id="bodyUpdate" rows="10" cols="30" name="body">${this.body.replace(
       /"/g,
       "&quot;"
-    )}" />
+    )}</textarea>
+
     <button class="submitBtn" type="submit">Submit</button>
     <button class="cancelBtn" type="button">Cancel</button>
     `
     );
-    console.log(this.title);
     const cancelBtn = form.querySelector(".cancelBtn");
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -55,7 +55,6 @@ class UpdatePostClass {
     });
 
     cancelBtn.addEventListener("click", (e) => {
-      console.log(e.target);
       setTimeout(() => redirectTo(`/posts/${this.id}`), 500);
     });
   }

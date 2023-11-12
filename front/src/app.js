@@ -16,6 +16,7 @@ import SinglePost from "./components/Posts/SinglePost.js";
 import createPost from "./components/Posts/CreatePost.js";
 
 const routes = {
+  "/": Home,
   "/home": Home,
   "/register": Register,
   "/login": Login,
@@ -33,26 +34,23 @@ const routes = {
 const isUserExist = JSON.parse(sessionStorage.getItem("user"));
 
 const createNav = () => {
-  let navItems;
-  if (!isUserExist) {
-    navItems = ["Home", "Register", "Login"];
+  let navItems = ["Home"];
+  if (isUserExist) {
+    navItems.push(
+      { label: "Users", items: ["Users", "My-Info", "Logout"] },
+      { label: "Posts", items: ["Posts", "CreatePost"] }
+    );
   } else {
-    navItems = [
-      "Home",
-      /* Try to do User group with drop-down menu*/ "My-Info",
-      "Users",
-      "Logout",
-      /* Posts group with drop-down menu*/
-      "CreatePost",
-      "Posts",
-    ];
+    navItems.push("Register", "Login");
   }
+
   const nav = new NavClass(navItems);
   nav.render();
 
   const logoutBtn = document.querySelector("#logoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
       try {
         await axios.get(backendUrl("users", "/logout"), {
           withCredentials: true,
@@ -73,7 +71,7 @@ const router = async () => {
   createNav();
 
   const request = parseRequestUrl();
-  let path = `/${request.resource}`;
+  let path = `/${request.resource || ""}`;
   if (request.id) {
     path += `/:id`;
     if (request.action) {
@@ -85,13 +83,12 @@ const router = async () => {
   const tryingToAccessAuthPage = path === "/login" || path === "/register";
 
   if (loggedIn && tryingToAccessAuthPage) {
-    redirectTo("/home");
+    redirectTo("/");
     return;
   }
 
   const page = routes[path] || NotFound;
 
-  // Route handling for users
   if (request.resource === "users" && request.id) {
     if (request.action === "update") {
       if (
@@ -102,16 +99,13 @@ const router = async () => {
       } else {
         document.querySelector(
           ".gridMain"
-        ).innerHTML = `<p>You Are Not Allowed!</p><a href='#/home'>Back Home Page</a>`;
+        ).innerHTML = `<p>You Are Not Allowed!</p><a href='#/'>Back Home Page</a>`;
       }
     } else {
       await singleUser(request.id);
     }
-  }
-  // Route handling for posts
-  else if (request.resource === "posts" && request.id) {
+  } else if (request.resource === "posts" && request.id) {
     const isUpdateAction = request.action === "update";
-    // If it's an update action, check if the user has the right permission
     if (
       isUpdateAction &&
       !(
@@ -121,14 +115,11 @@ const router = async () => {
     ) {
       document.querySelector(
         ".gridMain"
-      ).innerHTML = `<p>You Are Not Allowed!</p><a href='#/home'>Back Home Page</a>`;
+      ).innerHTML = `<p>You Are Not Allowed!</p><a href='#/'>Back Home Page</a>`;
     } else {
-      // Render the SinglePost or UpdatePost based on the action
       await SinglePost(request.id, isUpdateAction);
     }
-  }
-  // Route handling for all other pages
-  else {
+  } else {
     await page();
   }
 };

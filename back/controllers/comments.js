@@ -1,4 +1,4 @@
-const { BadRequest, NotFound } = require("../errors");
+const { BadRequest, NotFound, Forbidden } = require("../errors");
 const {
   Comment,
   validateComment,

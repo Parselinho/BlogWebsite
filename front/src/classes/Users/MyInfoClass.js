@@ -79,7 +79,7 @@ class MyInfoClass {
           div.textContent = "";
           divError.insertAdjacentHTML(
             "beforeend",
-            `<h2>${error.response.data.msg}</h2><a href='#/home'>Back Home Page</a>`
+            `<h2>${error.response.data.msg}</h2><a href='#/'>Back Home Page</a>`
           );
         }
       }

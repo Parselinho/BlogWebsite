@@ -6,7 +6,6 @@ const {
   createPost,
   updateSinglePostbById,
   deleteSinglePostbById,
-  getAllPostsByUserId,
   getAllPosts,
 } = require("../controllers/posts");
 const {
@@ -16,7 +15,7 @@ const {
 } = require("../controllers/comments");
 
 router.route("/").get(getAllPosts).post(createPost);
-router.route("/users/:id").get(getAllPostsByUserId); // didnt do FrontEnd
+// router.route("/users/:id").get(getAllPostsByUserId); // didnt do FrontEnd
 router
   .route("/:id")
   .get(getSinglePost)

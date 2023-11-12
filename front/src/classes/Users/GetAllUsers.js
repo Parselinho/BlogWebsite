@@ -24,7 +24,11 @@ class GetAllUsers {
     if (this.comments && this.comments.length > 0) {
       const commentsList = this.comments.map((item) => {
         // maybe instead of button make href:
-        return `<li><span class="post-title">${item.title}</span><span class="post-date">${item.post}</span><button class="info-btn">More Info About Comment</button></li>`;
+        return `<li><span class="post-title"><a href="${redirectTo(
+          "/posts"
+        )}">${item.title}</a></span><span class="post-date">${
+          item.post
+        }</span><button class="info-btn">More Info About Comment</button></li>`;
       });
       return `<ol>${commentsList}</ol>`;
     } else {

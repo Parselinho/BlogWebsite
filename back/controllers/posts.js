@@ -91,16 +91,16 @@ const deleteSinglePostbById = async (req, res) => {
 };
 
 // see all post by user
-const getAllPostsByUserId = async (req, res) => {
-  const { id: userid } = req.params;
-  if (!userid) {
-    throw new NotFound(`no user found`);
-  }
-  const allPosts = await Post.find({ author: userid })
-    .select("-author -_id -updatedAt -__v")
-    .exec();
-  res.status(200).json({ allPosts });
-};
+// const getAllPostsByUserId = async (req, res) => {
+//   const { id: userid } = req.params;
+//   if (!userid) {
+//     throw new NotFound(`no user found`);
+//   }
+//   const allPosts = await Post.find({ author: userid })
+//     .select("-author -_id -updatedAt -__v")
+//     .exec();
+//   res.status(200).json({ allPosts });
+// };
 
 // see all posts
 const getAllPosts = async (req, res) => {
@@ -120,6 +120,5 @@ module.exports = {
   createPost,
   updateSinglePostbById,
   deleteSinglePostbById,
-  getAllPostsByUserId,
   getAllPosts,
 };

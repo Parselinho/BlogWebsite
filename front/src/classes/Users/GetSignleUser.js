@@ -77,13 +77,13 @@ class GetSingleUser {
           if (sessionUser.userId === this.id) {
             sessionStorage.removeItem("user");
           }
-          redirectTo("/home");
+          redirectTo("/");
           location.reload();
         } catch (error) {
           div.textContent = "";
           divError.insertAdjacentHTML(
             "beforeend",
-            `<h2>${error.response.data.msg}</h2><a href='#/home'>Back Home Page</a>`
+            `<h2>${error.response.data.msg}</h2><a href='#/'>Back Home Page</a>`
           );
         }
       }

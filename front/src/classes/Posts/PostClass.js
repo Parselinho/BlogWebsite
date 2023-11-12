@@ -70,7 +70,6 @@ class PostClass {
         <div class='deleteOrEdit'></div>
     <div class="post-footer">
       <div class="post-interactions">
-        <button class="post-like-btn">Like</button>
         <button class="post-comment-btn">Comment</button>
       </div>
       <div class="post-comments">
@@ -120,7 +119,6 @@ class PostClass {
             newComment,
             { withCredentials: true }
           );
-          console.log(data);
           location.reload();
         } catch (error) {
           divErr.innerHTML = `${error.response.data.msg}`;
@@ -134,62 +132,92 @@ class PostClass {
     });
 
     divComments.addEventListener("click", async (e) => {
-      const singleComment = e.target.getAttribute("data-comment-id");
+      if (e.target.classList.contains("commentBtn")) {
+        const button = e.target;
+        const singleComment = button.getAttribute("data-comment-id");
 
-      if (e.target.classList.contains("updateBtn")) {
-        const commentParent = e.target.closest("li");
-        const titleSpan = commentParent.children[0];
-        const bodySpan = commentParent.children[1];
-        const updateBtn = commentParent.children[4];
-        const errorUpdate = commentParent.children[3];
-        errorUpdate.innerHTML = "";
-
-        if (updateBtn.textContent === "Update") {
-          commentParent.titleInput = document.createElement("input");
-          commentParent.bodyInput = document.createElement("input");
-
-          commentParent.titleInput.value = titleSpan.textContent;
-          commentParent.bodyInput.value = bodySpan.textContent;
-
-          titleSpan.replaceWith(commentParent.titleInput);
-          bodySpan.replaceWith(commentParent.bodyInput);
-
-          updateBtn.textContent = "Save";
-        } else if (updateBtn.textContent === "Save") {
-          let updateComment = {
-            title: commentParent.titleInput.value,
-            body: commentParent.bodyInput.value,
-          };
-          try {
-            const { data } = await axios.patch(
-              backendUrl(
-                "posts",
-                `/${this.id}`,
-                "/comments",
-                `/${singleComment}`
-              ),
-              updateComment,
-              { withCredentials: true }
-            );
-            location.reload();
-          } catch (error) {
-            errorUpdate.innerHTML = `${error.response.data.msg}`;
+        if (singleComment) {
+          const commentParent = button.closest("li");
+          if (!commentParent) {
+            console.error("Comment parent element not found.");
+            return;
           }
-        }
-      } else if (e.target.classList.contains("deleteBtn")) {
-        try {
-          const { data } = await axios.delete(
-            backendUrl(
-              "posts",
-              `/${this.id}`,
-              "/comments",
-              `/${singleComment}`
-            ),
-            { withCredentials: true }
-          );
-          location.reload();
-        } catch (error) {
-          commentsError.innerHTML = `${error.response.data.msg}`;
+
+          const titleElement =
+            commentParent.querySelector("span:first-child") ||
+            commentParent.querySelector("input:first-child");
+          const bodyElement =
+            commentParent.querySelector("span:nth-child(2)") ||
+            commentParent.querySelector("input:nth-child(2)");
+          const updateBtn = commentParent.querySelector(".updateBtn");
+          const deleteBtn = commentParent.querySelector(".deleteBtn");
+          const errorUpdate = commentParent.querySelector(".updateError");
+
+          if (button.classList.contains("updateBtn")) {
+            if (updateBtn.textContent === "Update") {
+              commentParent.originalTitle = titleElement.textContent;
+              commentParent.originalBody = bodyElement.textContent;
+
+              commentParent.titleInput = document.createElement("input");
+              commentParent.bodyInput = document.createElement("input");
+              commentParent.titleInput.value = titleElement.textContent;
+              commentParent.bodyInput.value = bodyElement.textContent;
+
+              titleElement.replaceWith(commentParent.titleInput);
+              bodyElement.replaceWith(commentParent.bodyInput);
+
+              updateBtn.textContent = "Save";
+              deleteBtn.textContent = "Cancel";
+            } else if (updateBtn.textContent === "Save") {
+              let updateComment = {
+                title: commentParent.titleInput.value,
+                body: commentParent.bodyInput.value,
+              };
+              try {
+                await axios.patch(
+                  backendUrl(
+                    "posts",
+                    `/${this.id}`,
+                    "/comments",
+                    `/${singleComment}`
+                  ),
+                  updateComment,
+                  { withCredentials: true }
+                );
+                location.reload();
+              } catch (error) {
+                errorUpdate.innerHTML = error.response.data.msg;
+              }
+            }
+          } else if (button.classList.contains("deleteBtn")) {
+            if (deleteBtn.textContent === "Cancel") {
+              const originalTitleSpan = document.createElement("span");
+              const originalBodySpan = document.createElement("span");
+              originalTitleSpan.textContent = commentParent.originalTitle;
+              originalBodySpan.textContent = commentParent.originalBody;
+
+              commentParent.titleInput.replaceWith(originalTitleSpan);
+              commentParent.bodyInput.replaceWith(originalBodySpan);
+
+              updateBtn.textContent = "Update";
+              deleteBtn.textContent = "Delete";
+            } else {
+              try {
+                await axios.delete(
+                  backendUrl(
+                    "posts",
+                    `/${this.id}`,
+                    "/comments",
+                    `/${singleComment}`
+                  ),
+                  { withCredentials: true }
+                );
+                location.reload();
+              } catch (error) {
+                errorUpdate.innerHTML = `${error.response.data.msg}`;
+              }
+            }
+          }
         }
       }
     });
@@ -223,6 +251,9 @@ class PostClass {
         } catch (error) {
           divError.innerHTML = `${error.response.data.msg}`;
         }
+      });
+      goToPostId.addEventListener("click", () => {
+        redirectTo("/posts");
       });
     }
   }

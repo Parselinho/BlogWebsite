@@ -18,7 +18,7 @@ class CreatePostClass {
         <label for="postTitle">Set title:</label>
         <input type="text" id="postTitle" name="title" />
         <label for="postBody">Set body:</label>
-        <input type="text" id="postBody" name="body" />
+        <textarea id="postBody" rows="10" cols="30" name="body"></textarea>
         <button type="submit">Submit</button>
         <button class="cancelBtn" type="button">Cancel</button>
      `
@@ -31,12 +31,11 @@ class CreatePostClass {
         body: form.querySelector("#postBody").value,
       };
       try {
-        const { data } = axios.post(backendUrl("posts"), newPost, {
+        const { data } = await axios.post(backendUrl("posts"), newPost, {
           withCredentials: true,
         });
         divError.innerHTML = `Post Created!`;
         setTimeout(() => redirectTo("/posts"), 500);
-        console.log(data);
       } catch (error) {
         divError.innerHTML = `${error.response.data.msg}`;
       }

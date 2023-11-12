@@ -16,8 +16,6 @@ const PostSchema = new Schema(
         ref: "Comment",
       },
     ],
-    // categories: {}
-    // meta : {votes:Number,favs:Number}
   },
   { timestamps: true }
 );
