@@ -1,0 +1,24 @@
+{
+  "name": "fuckshit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node back/app.js",
+    "heroku-postbuild": "cd front && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Parselinho/BlogWebsite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "19.x"
+  },
+  "bugs": {
+    "url": "https://github.com/Parselinho/BlogWebsite/issues"
+  },
+  "homepage": "https://github.com/Parselinho/BlogWebsite#readme"
+}
